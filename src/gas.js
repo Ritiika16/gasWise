@@ -1,7 +1,7 @@
-const axios = require("axios");
-require("dotenv").config();
+const { ethers } = require("ethers");
 
-const { CHAINS } = require("./chains");
+const { CHAINS } =
+    require("./chains");
 
 async function getGasFees(
     chain = "ethereum"
@@ -15,31 +15,42 @@ async function getGasFees(
         if (!selectedChain) {
 
             return {
-                error: "Unsupported chain"
+                error:
+                    "Unsupported chain"
             };
 
         }
 
-        const apiKey =
-            process.env.ETHERSCAN_API_KEY;
+        const provider =
+            new ethers.JsonRpcProvider(
+                selectedChain.rpc
+            );
 
-        const response = await axios.get(
-            `https://api.etherscan.io/v2/api?chainid=${selectedChain.chainId}&module=gastracker&action=gasoracle&apikey=${apiKey}`
-        );
+        const feeData =
+            await provider.getFeeData();
 
-        const data =
-            response.data.result;
+        const slow =
+            Number(
+                ethers.formatUnits(
+                    feeData.gasPrice,
+                    "gwei"
+                )
+            );
 
         return {
+
             chain,
+
             slow:
-                data.SafeGasPrice + " gwei",
+                slow.toFixed(2) + " gwei",
 
             standard:
-                data.ProposeGasPrice + " gwei",
+                (slow * 1.1).toFixed(2)
+                + " gwei",
 
             fast:
-                data.FastGasPrice + " gwei"
+                (slow * 1.2).toFixed(2)
+                + " gwei"
         };
 
     } catch (error) {

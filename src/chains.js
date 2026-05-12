@@ -1,19 +1,25 @@
 const CHAINS = {
 
     ethereum: {
-        chainId: 1,
+        rpc: "https://ethereum-rpc.publicnode.com",
         nativeToken: "ETH",
         coingeckoId: "ethereum"
     },
 
     polygon: {
-        chainId: 137,
+        rpc: "https://polygon-bor-rpc.publicnode.com",
         nativeToken: "MATIC",
         coingeckoId: "polygon-ecosystem-token"
     },
 
+    arbitrum: {
+        rpc: "https://arbitrum-one-rpc.publicnode.com",
+        nativeToken: "ETH",
+        coingeckoId: "ethereum"
+    },
+
     base: {
-        chainId: 8453,
+        rpc: "https://base-rpc.publicnode.com",
         nativeToken: "ETH",
         coingeckoId: "ethereum"
     }
