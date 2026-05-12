@@ -2,20 +2,17 @@ const gaswise = require("./index");
 
 async function main() {
 
-    const gas = await gaswise.getGasFees();
+    const gas = await gaswise.getGasFees(
+        "polygon"
+    );
 
-    console.log("Gas Fees:");
-    console.log(gas);
+    const gasPrice = parseFloat(gas.standard);
 
-    const gasPrice =
-        parseFloat(gas.standard);
-
-    console.log("\nEstimated Cost:");
-
-    const estimate =
-        await gaswise.estimateTransactionCost(
+    const estimate =await gaswise
+        .estimateTransactionCost(
             "erc20",
-            gasPrice
+            gasPrice,
+            "polygon"
         );
 
     console.log(estimate);

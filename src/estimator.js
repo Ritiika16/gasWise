@@ -1,9 +1,16 @@
-const { GAS_LIMITS } = require("./constants");
-const { getEthPrice } = require("./price");
+const { GAS_LIMITS } =
+    require("./constants");
+
+const { CHAINS } =
+    require("./chains");
+
+const { getTokenPrice } =
+    require("./price");
 
 async function estimateTransactionCost(
     transactionType,
-    gasPriceGwei
+    gasPriceGwei,
+    chain = "ethereum"
 ) {
 
     const gasLimit =
@@ -12,7 +19,20 @@ async function estimateTransactionCost(
     if (!gasLimit) {
 
         return {
-            error: "Invalid transaction type"
+            error:
+                "Invalid transaction type"
+        };
+
+    }
+
+    const selectedChain =
+        CHAINS[chain];
+
+    if (!selectedChain) {
+
+        return {
+            error:
+                "Unsupported chain"
         };
 
     }
@@ -20,20 +40,33 @@ async function estimateTransactionCost(
     const totalGwei =
         gasLimit * gasPriceGwei;
 
-    const totalEth =
+    const totalNative =
         totalGwei / 1e9;
 
-    const ethPrice =
-        await getEthPrice();
+    const tokenPrice =
+        await getTokenPrice(
+            selectedChain.coingeckoId
+        );
 
     const estimatedUsd =
-        totalEth * ethPrice;
+        totalNative * tokenPrice;
 
     return {
+
+        chain,
+
+        nativeToken:
+            selectedChain.nativeToken,
+
         transactionType,
+
         gasLimit,
+
         gasPriceGwei,
-        totalEth: totalEth.toFixed(8),
+
+        totalNative:
+            totalNative.toFixed(8),
+
         estimatedUsd:
             "$" + estimatedUsd.toFixed(4)
     };

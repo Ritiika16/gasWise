@@ -1,14 +1,19 @@
 const axios = require("axios");
 
-async function getEthPrice() {
+async function getTokenPrice(
+    coingeckoId
+) {
 
     try {
 
-        const response = await axios.get(
-            "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
-        );
+        const response =
+            await axios.get(
+                `https://api.coingecko.com/api/v3/simple/price?ids=${coingeckoId}&vs_currencies=usd`
+            );
 
-        return response.data.ethereum.usd;
+        return response.data[
+            coingeckoId
+        ].usd;
 
     } catch (error) {
 
@@ -18,5 +23,5 @@ async function getEthPrice() {
 }
 
 module.exports = {
-    getEthPrice
+    getTokenPrice
 };
