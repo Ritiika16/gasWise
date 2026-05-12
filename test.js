@@ -13,7 +13,7 @@ async function main() {
     console.log("\nEstimated Cost:");
 
     const estimate =
-        gaswise.estimateTransactionCost(
+        await gaswise.estimateTransactionCost(
             "erc20",
             gasPrice
         );

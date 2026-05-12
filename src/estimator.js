@@ -1,6 +1,7 @@
 const { GAS_LIMITS } = require("./constants");
+const { getEthPrice } = require("./price");
 
-function estimateTransactionCost(
+async function estimateTransactionCost(
     transactionType,
     gasPriceGwei
 ) {
@@ -22,11 +23,19 @@ function estimateTransactionCost(
     const totalEth =
         totalGwei / 1e9;
 
+    const ethPrice =
+        await getEthPrice();
+
+    const estimatedUsd =
+        totalEth * ethPrice;
+
     return {
         transactionType,
         gasLimit,
         gasPriceGwei,
-        totalEth: totalEth.toFixed(8)
+        totalEth: totalEth.toFixed(8),
+        estimatedUsd:
+            "$" + estimatedUsd.toFixed(4)
     };
 }
 
