@@ -3,12 +3,11 @@
   "version": "1.0.0",
   "description": "Multi-chain gas estimation SDK and CLI",
   "main": "index.js",
-
+  "types": "types/index.d.ts",
   "bin": {
     "gaswise": "./cli.js"
   },
-
-    "keywords": [
+  "keywords": [
     "ethereum",
     "gas",
     "web3",
@@ -16,7 +15,6 @@
     "sdk",
     "cli"
   ],
-
   "scripts": {
     "test": "node test.js"
   },
@@ -25,6 +23,9 @@
     "dotenv": "^17.4.2",
     "ethers": "^6.16.0"
   },
-
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.7.0",
+    "typescript": "^6.0.3"
+  }
 }

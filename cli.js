@@ -25,19 +25,19 @@ async function main() {
     }
 
     console.log(
-        `Slow: ${gas.slow}`
+        `Base Fee: ${gas.baseFee}`
     );
 
     console.log(
-        `Standard: ${gas.standard}`
+        `Priority Fee: ${gas.priorityFee}`
     );
 
     console.log(
-        `Fast: ${gas.fast}\n`
+        `Max Fee: ${gas.maxFee}\n`
     );
 
     const gasPrice =
-        parseFloat(gas.standard);
+        parseFloat(gas.maxFee);
 
     const estimate =
         await gaswise

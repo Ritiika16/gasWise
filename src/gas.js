@@ -30,23 +30,37 @@ async function getGasFees(
         const feeData =
             await provider.getFeeData();
 
-        if (!feeData.gasPrice) {
+        if (
+            !feeData.maxFeePerGas ||
+            !feeData.maxPriorityFeePerGas
+        ) {
 
             return {
                 success: false,
                 error:
-                    "Gas data unavailable"
+                    "EIP-1559 gas data unavailable"
             };
 
         }
 
-        const gasPrice =
+        const maxFee =
             Number(
                 ethers.formatUnits(
-                    feeData.gasPrice,
+                    feeData.maxFeePerGas,
                     "gwei"
                 )
             );
+
+        const priorityFee =
+            Number(
+                ethers.formatUnits(
+                    feeData.maxPriorityFeePerGas,
+                    "gwei"
+                )
+            );
+
+        const baseFee =
+            maxFee - priorityFee;
 
         return {
 
@@ -54,19 +68,16 @@ async function getGasFees(
 
             chain,
 
-            slow:
-                gasPrice
-                .toFixed(2)
+            baseFee:
+                baseFee.toFixed(2)
                 + " gwei",
 
-            standard:
-                (gasPrice * 1.1)
-                .toFixed(2)
+            priorityFee:
+                priorityFee.toFixed(2)
                 + " gwei",
 
-            fast:
-                (gasPrice * 1.2)
-                .toFixed(2)
+            maxFee:
+                maxFee.toFixed(2)
                 + " gwei"
         };
 
