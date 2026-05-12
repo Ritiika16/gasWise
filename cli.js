@@ -1,17 +1,28 @@
-#!/usr/bin/env node
-const gaswise = require("./index");
+const gaswise =
+    require("./index");
 
 async function main() {
 
     const chain =
-        process.argv[2] || "ethereum";
+        process.argv[2]
+        || "ethereum";
 
     console.log(
         `\n${chain.toUpperCase()} GAS TRACKER\n`
     );
 
     const gas =
-        await gaswise.getGasFees(chain);
+        await gaswise
+        .getGasFees(chain);
+
+    if (!gas.success) {
+
+        console.log(
+            `Error: ${gas.error}`
+        );
+
+        return;
+    }
 
     console.log(
         `Slow: ${gas.slow}`
@@ -36,10 +47,18 @@ async function main() {
             chain
         );
 
+    if (!estimate.success) {
+
+        console.log(
+            `Error: ${estimate.error}`
+        );
+
+        return;
+    }
+
     console.log(
         `Estimated ERC20 Cost: ${estimate.estimatedUsd}`
     );
-
 }
 
 main();

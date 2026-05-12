@@ -13,63 +13,98 @@ async function estimateTransactionCost(
     chain = "ethereum"
 ) {
 
-    const gasLimit =
-        GAS_LIMITS[transactionType];
+    try {
 
-    if (!gasLimit) {
+        const gasLimit =
+            GAS_LIMITS[
+                transactionType
+            ];
+
+        if (!gasLimit) {
+
+            return {
+                success: false,
+                error:
+                    "Invalid transaction type"
+            };
+
+        }
+
+        const selectedChain =
+            CHAINS[chain];
+
+        if (!selectedChain) {
+
+            return {
+                success: false,
+                error:
+                    "Unsupported chain"
+            };
+
+        }
+
+        const totalGwei =
+            gasLimit *
+            gasPriceGwei;
+
+        const totalNative =
+            totalGwei / 1e9;
+
+        const tokenPrice =
+            await getTokenPrice(
+                selectedChain.coingeckoId
+            );
+
+        if (!tokenPrice) {
+
+            return {
+                success: false,
+                error:
+                    "Token price unavailable"
+            };
+
+        }
+
+        const estimatedUsd =
+            totalNative *
+            tokenPrice;
 
         return {
-            error:
-                "Invalid transaction type"
+
+            success: true,
+
+            chain,
+
+            nativeToken:
+                selectedChain
+                .nativeToken,
+
+            transactionType,
+
+            gasLimit,
+
+            gasPriceGwei,
+
+            totalNative:
+                totalNative
+                .toFixed(8),
+
+            estimatedUsd:
+                "$"
+                + estimatedUsd
+                .toFixed(4)
         };
 
-    }
-
-    const selectedChain =
-        CHAINS[chain];
-
-    if (!selectedChain) {
+    } catch (error) {
 
         return {
+
+            success: false,
+
             error:
-                "Unsupported chain"
+                error.message
         };
-
     }
-
-    const totalGwei =
-        gasLimit * gasPriceGwei;
-
-    const totalNative =
-        totalGwei / 1e9;
-
-    const tokenPrice =
-        await getTokenPrice(
-            selectedChain.coingeckoId
-        );
-
-    const estimatedUsd =
-        totalNative * tokenPrice;
-
-    return {
-
-        chain,
-
-        nativeToken:
-            selectedChain.nativeToken,
-
-        transactionType,
-
-        gasLimit,
-
-        gasPriceGwei,
-
-        totalNative:
-            totalNative.toFixed(8),
-
-        estimatedUsd:
-            "$" + estimatedUsd.toFixed(4)
-    };
 }
 
 module.exports = {

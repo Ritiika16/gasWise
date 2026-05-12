@@ -1,11 +1,21 @@
 {
   "name": "gaswise",
   "version": "1.0.0",
+  "description": "Multi-chain gas estimation SDK and CLI",
   "main": "index.js",
 
   "bin": {
     "gaswise": "./cli.js"
   },
+
+    "keywords": [
+    "ethereum",
+    "gas",
+    "web3",
+    "blockchain",
+    "sdk",
+    "cli"
+  ],
 
   "scripts": {
     "test": "node test.js"
@@ -14,5 +24,7 @@
     "axios": "^1.16.0",
     "dotenv": "^17.4.2",
     "ethers": "^6.16.0"
-  }
+  },
+
+  "license": "MIT"
 }

@@ -1,14 +1,48 @@
 # GasWise ⛽
 
-A lightweight Node.js package for Ethereum gas fee estimation, transaction cost calculation, and unit conversion.
+A lightweight multi-chain Node.js SDK and CLI tool for gas fee estimation, transaction cost calculation, and blockchain unit conversion.
 
-## Features
+GasWise supports:
+- Ethereum
+- Polygon
+- Arbitrum
+- Base
 
-- Live Ethereum gas fee tracking
-- Transaction cost estimation
-- Wei / Gwei / ETH conversion utilities
-- Modular and lightweight
-- Easy to integrate into blockchain projects
+with live RPC-based gas estimation and USD transaction cost calculation.
+
+---
+
+# Features
+
+✅ Multi-chain gas fee tracking  
+✅ RPC-based gas estimation  
+✅ USD transaction cost estimation  
+✅ Transaction-type gas estimation  
+✅ Wei / Gwei / ETH conversion utilities  
+✅ CLI support  
+✅ Lightweight and modular architecture  
+✅ EIP-1559 ready architecture  
+
+---
+
+# Supported Chains
+
+| Chain | Native Token |
+|---|---|
+| Ethereum | ETH |
+| Polygon | MATIC |
+| Arbitrum | ETH |
+| Base | ETH |
+
+---
+
+# Supported Transaction Types
+
+| Transaction Type | Gas Limit |
+|---|---|
+| transfer | 21000 |
+| erc20 | 65000 |
+| nft | 120000 |
 
 ---
 
@@ -20,21 +54,55 @@ npm install gaswise
 
 ---
 
-# Setup
+# CLI Usage
 
-Create a `.env` file in your project root:
+## Ethereum
 
-```env
-ETHERSCAN_API_KEY=YOUR_API_KEY
+```bash
+gaswise ethereum
 ```
-
-Get your free API key from:
-
-https://etherscan.io/apis
 
 ---
 
-# Usage
+## Polygon
+
+```bash
+gaswise polygon
+```
+
+---
+
+## Arbitrum
+
+```bash
+gaswise arbitrum
+```
+
+---
+
+## Base
+
+```bash
+gaswise base
+```
+
+---
+
+# Example CLI Output
+
+```txt
+POLYGON GAS TRACKER
+
+Slow: 285.95 gwei
+Standard: 285.95 gwei
+Fast: 298.08 gwei
+
+Estimated ERC20 Cost: $0.0019
+```
+
+---
+
+# SDK Usage
 
 ## Import Package
 
@@ -47,18 +115,24 @@ const gaswise = require("gaswise");
 # Get Live Gas Fees
 
 ```js
-const gas = await gaswise.getGasFees();
+const gas =
+    await gaswise.getGasFees(
+        "polygon"
+    );
 
 console.log(gas);
 ```
 
-### Example Output
+---
+
+# Example Output
 
 ```js
 {
-  slow: '1.2 gwei',
-  standard: '1.5 gwei',
-  fast: '2.0 gwei'
+  chain: 'polygon',
+  slow: '285.95 gwei',
+  standard: '285.95 gwei',
+  fast: '298.08 gwei'
 }
 ```
 
@@ -68,34 +142,31 @@ console.log(gas);
 
 ```js
 const estimate =
-    gaswise.estimateTransactionCost(
+    await gaswise
+    .estimateTransactionCost(
         "erc20",
-        1.5
+        285.95,
+        "polygon"
     );
 
 console.log(estimate);
 ```
 
-### Example Output
+---
+
+# Example Output
 
 ```js
 {
+  chain: 'polygon',
+  nativeToken: 'MATIC',
   transactionType: 'erc20',
   gasLimit: 65000,
-  gasPriceGwei: 1.5,
-  totalEth: '0.00009750'
+  gasPriceGwei: 285.95,
+  totalNative: '0.01858',
+  estimatedUsd: '$0.0019'
 }
 ```
-
----
-
-# Supported Transaction Types
-
-| Type      | Gas Limit |
-|-----------|-----------|
-| transfer  | 21000 |
-| erc20     | 65000 |
-| nft       | 120000 |
 
 ---
 
@@ -133,7 +204,7 @@ gaswise.weiToEth(value);
 
 ---
 
-# Example
+# Full SDK Example
 
 ```js
 const gaswise = require("gaswise");
@@ -141,7 +212,9 @@ const gaswise = require("gaswise");
 async function main() {
 
     const gas =
-        await gaswise.getGasFees();
+        await gaswise.getGasFees(
+            "polygon"
+        );
 
     console.log(gas);
 
@@ -149,19 +222,44 @@ async function main() {
         parseFloat(gas.standard);
 
     const estimate =
-        gaswise.estimateTransactionCost(
+        await gaswise
+        .estimateTransactionCost(
             "erc20",
-            gasPrice
+            gasPrice,
+            "polygon"
         );
 
     console.log(estimate);
 
     console.log(
-        gaswise.gweiToWei(20).toString()
+        gaswise
+        .gweiToWei(20)
+        .toString()
     );
 }
 
 main();
+```
+
+---
+
+# Project Structure
+
+```txt
+gaswise/
+│
+├── cli.js
+├── index.js
+├── package.json
+├── README.md
+│
+└── src/
+    ├── gas.js
+    ├── estimator.js
+    ├── converter.js
+    ├── chains.js
+    ├── constants.js
+    └── price.js
 ```
 
 ---
@@ -171,17 +269,40 @@ main();
 - Node.js
 - ethers.js
 - axios
-- dotenv
+- CoinGecko API
+- RPC Providers
 
 ---
 
-# Future Improvements
+# Architecture
 
-- Multi-chain support
-- EIP-1559 fee calculations
-- USD transaction cost estimation
-- CLI support
-- TypeScript support
+GasWise uses:
+- RPC providers for reliable gas estimation
+- CoinGecko for native token USD pricing
+- modular chain configuration
+- CLI + SDK dual support
+
+---
+
+# Upcoming Features
+
+- EIP-1559 support
+- TypeScript definitions
+- Smart contract deployment estimation
+- Swap/bridge estimation
+- Historical gas analytics
+- Custom RPC support
+
+---
+
+# Contributing
+
+Contributions are welcome.
+
+Feel free to:
+- open issues
+- suggest improvements
+- submit pull requests
 
 ---
 

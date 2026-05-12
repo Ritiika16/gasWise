@@ -15,6 +15,7 @@ async function getGasFees(
         if (!selectedChain) {
 
             return {
+                success: false,
                 error:
                     "Unsupported chain"
             };
@@ -29,7 +30,17 @@ async function getGasFees(
         const feeData =
             await provider.getFeeData();
 
-        const slow =
+        if (!feeData.gasPrice) {
+
+            return {
+                success: false,
+                error:
+                    "Gas data unavailable"
+            };
+
+        }
+
+        const gasPrice =
             Number(
                 ethers.formatUnits(
                     feeData.gasPrice,
@@ -39,24 +50,35 @@ async function getGasFees(
 
         return {
 
+            success: true,
+
             chain,
 
             slow:
-                slow.toFixed(2) + " gwei",
+                gasPrice
+                .toFixed(2)
+                + " gwei",
 
             standard:
-                (slow * 1.1).toFixed(2)
+                (gasPrice * 1.1)
+                .toFixed(2)
                 + " gwei",
 
             fast:
-                (slow * 1.2).toFixed(2)
+                (gasPrice * 1.2)
+                .toFixed(2)
                 + " gwei"
         };
 
     } catch (error) {
 
-        console.log(error.message);
+        return {
 
+            success: false,
+
+            error:
+                error.message
+        };
     }
 }
 
